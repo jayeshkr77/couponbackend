@@ -65,10 +65,10 @@ exports.couponApply = (req, res) => {
     try {     
         Coupon.find({couponCode:req.body.couponCode}).then((coupons)=>{
             if(!coupons.length){
-                return res.status(404).json({ message: "Failure: No coupon's found", data: {coupon:coupons[0], payableAmount: req.body.cart, discount:0} });
+                return res.status(404).json({ message: "Failure: No coupon found", data: {coupon:coupons[0], payableAmount: req.body.cart, discount:0} });
             }else{
                 if(new Date(coupons[0].endDate) < new Date() || new Date(coupons[0].startDate) > new Date()){
-                    return res.status(400).json({ message: "Failure: Coupon's expired", data: {coupon:coupons[0], payableAmount: req.body.cart, discount:0} });
+                    return res.status(400).json({ message: "Failure: Coupon expired", data: {coupon:coupons[0], payableAmount: req.body.cart, discount:0} });
                 }else{
                     //Aply the coupon code
                     let discount = 0;
