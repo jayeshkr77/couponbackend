@@ -11,7 +11,7 @@ var MONGODB_URL = process.env.MONGODB_URL;
 
 var app = express();
 
-var port = process.env.PORT || 4000;
+var port = process.env.PORT || 3334;
 
 mongoose.connect(MONGODB_URL, { useNewUrlParser: true })
     .then(() => console.log('Database Connected'))
@@ -27,9 +27,11 @@ app.use(cors());
 
 
 app.get('/', (req, res) => {
-    res.send('Works')
+    res.send('Works <br/> <a href="/p"> party </a>')
 })
-
+app.get('/p', (req,res) => {
+    res.sendFile(__dirname+'/public/jparty.html');
+})
 app.use("/api/", apiRouter);
 
 
