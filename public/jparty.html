@@ -9,46 +9,57 @@
 	<meta property="og:image" content="https://jknet.ml/images/jknet.png">
 	<meta property="og:type" content="article" />
 	<meta property="og:locale" content="en_US" />
-    <style>
-        body{
-            margin:0;
-            padding:0;
-            width:100vw;
-            height:100vh;
-        }
-        div{
-            height:100%;
-            width:100%;
-            background-color: red;
-            animation: mymove 2s infinite;
-            -moz-animation: mymove 1s infinite;
-        }
-        /* @keyframes mymove {
-            0%   {background: #ff3333;}
-            25%  {background: #Fcff33;}
-            50%  {background: #33ff33;}
-            75%  {background: #334cff;}
-            100% {background: #ff33e9;}
-        } */
-        /* @keyframes mymove {
-            0%   {background: #ff0000;}
-            15%  {background: #ff8000;}
-            30%  {background: #008000;}
-            45%  {background: #0000ff;}
-            60%  {background: #bf00ff;}
-            75%  {background: #800080;}
-            90%  {background: #660000;}
-        } */
-        @keyframes mymove {
-            0%   {background: #ff0000;}
-            25%  {background: #0000ff;}
-            40%  {background: #bf00ff;}
-            75%  {background: #800080;}
-            90%  {background: #660000;}
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/jparty.css" />
 </head>
 <body>
-    <div class="color"></div>
+    <div class="container theme-dark speed-1s theme-duration-infinite">
+        <div class="controls">
+            <div class="row">
+                <select id="theme" onclick="getTheme()">
+                    <option value="simple">Simple</option>
+                    <option value="dark">Dark</option>
+                    <option value="static">Static</option>
+                </select>
+                <br/>
+                <input id="color" type="color" oninput="setStaticColor()" style="display: none;" />
+            </div>
+            <div class="row">
+                <select id="tempo" onclick="getTempo()">
+                    <option value="1s">1 Sec</option>
+                    <option value="2s">2 Sec</option>
+                    <option value="3s">3 Sec</option>
+                    <option value="4s">4 Sec</option>
+                    <option value="5s">5 Sec</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const getTheme = () => {
+            let theme = document.querySelector("#theme");
+            let container = document.querySelector(".container");
+            let staticColor = document.querySelector("#color");
+            container.className = container.className.replace(/theme-(simple|dark|full|static)/gm,`theme-${theme.value}`);
+            if(theme.value === 'static'){
+                staticColor.style.display = 'block';
+                container.style.backgroundColor = staticColor.value
+            }else{
+                staticColor.style.display = 'none';
+                container.style.removeProperty('background-color')
+            }
+        }
+        const getTempo = () => {
+            let speed = document.querySelector("#tempo");
+            let container = document.querySelector(".container");
+            container.className = container.className.replace(/speed-[\d]{1,2}s/gm,`speed-${speed.value}`);
+        }
+
+        const setStaticColor = () => {
+            let container = document.querySelector(".container");
+            let staticColor = document.querySelector("#color");
+            container.style.backgroundColor = staticColor.value
+        }
+    </script>
 </body>
 </html>
