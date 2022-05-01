@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Party Bro!!</title>
     <meta property="og:title" content="Party" />
-	<meta property="og:description" content="Just pary hard.">
-	<meta property="og:image" content="https://jknet.ml/images/jknet.png">
-	<meta property="og:type" content="article" />
-	<meta property="og:locale" content="en_US" />
+    <meta property="og:description" content="Just pary hard.">
+    <meta property="og:image" content="https://jknet.ml/images/jknet.png">
+    <meta property="og:type" content="article" />
+    <meta property="og:locale" content="en_US" />
     <link rel="stylesheet" type="text/css" href="css/jparty.css" />
 </head>
+
 <body>
     <div class="container theme-dark speed-1s theme-duration-infinite">
         <div class="controls">
             <div class="row">
+                <!-- When you add any option here also update regex in getTheme -->
                 <select id="theme" onclick="getTheme()">
                     <option value="simple">Simple</option>
                     <option value="dark">Dark</option>
                     <option value="static">Static</option>
+                    <option value="police">Police</option>
                 </select>
-                <br/>
+                <br />
                 <input id="color" type="color" oninput="setStaticColor()" style="display: none;" />
             </div>
             <div class="row">
@@ -33,6 +37,14 @@
                 </select>
             </div>
         </div>
+        <div id="police" class="police-container" style="display: none;">
+            <div class="police-light"></div>
+            <div class="police-light"></div>
+            <div class="police-light"></div>
+            <div class="police-light"></div>
+            <!-- <div class="police-light"></div>
+            <div class="police-light"></div> -->
+        </div>
     </div>
 
     <script>
@@ -40,11 +52,14 @@
             let theme = document.querySelector("#theme");
             let container = document.querySelector(".container");
             let staticColor = document.querySelector("#color");
-            container.className = container.className.replace(/theme-(simple|dark|full|static)/gm,`theme-${theme.value}`);
-            if(theme.value === 'static'){
+            container.className = container.className.replace(/theme-(simple|dark|full|static|police)/gm, `theme-${theme.value}`);
+            if (theme.value === 'static') {
                 staticColor.style.display = 'block';
                 container.style.backgroundColor = staticColor.value
-            }else{
+            } else if (theme.value === 'police') {
+                let police = document.querySelector("#police");
+                police.style.display = 'flex';
+            } else {
                 staticColor.style.display = 'none';
                 container.style.removeProperty('background-color')
             }
@@ -52,7 +67,7 @@
         const getTempo = () => {
             let speed = document.querySelector("#tempo");
             let container = document.querySelector(".container");
-            container.className = container.className.replace(/speed-[\d]{1,2}s/gm,`speed-${speed.value}`);
+            container.className = container.className.replace(/speed-[\d]{1,2}s/gm, `speed-${speed.value}`);
         }
 
         const setStaticColor = () => {
@@ -60,6 +75,17 @@
             let staticColor = document.querySelector("#color");
             container.style.backgroundColor = staticColor.value
         }
+        window.onload = () => {
+            let policelights = document.getElementsByClassName("police-light");
+            for (let i = 0; i < policelights.length; i++) {
+                for(let j =0; j<100; j++){
+                    let bulb = document.createElement('div');
+                    bulb.className = "police-light-bulb";
+                    policelights[i].appendChild(bulb);
+                }
+            };
+        }
     </script>
 </body>
+
 </html>
