@@ -98,6 +98,25 @@ input[type=color]{
     border-radius: 50%;
 }
 
+#music{
+    position: Absolute;
+    z-index: -3;
+    width:100vw;
+    height: 100vh;
+    background-color: #008000;
+    animation-name: rainbow;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+}
+#dark-overlay{
+    position: Absolute;
+    z-index: -2;
+    width:100vw;
+    height: 100vh;
+    background-color: #333;
+}
+
 .theme-simple{
     animation-name: simple;
     -moz-animation-name: simple;
@@ -173,4 +192,14 @@ input[type=color]{
     70% {background: #222;}
     85% {background: #f41505; box-shadow: 0 0 200px 0 #f41505}
     100% {background: #222;}
+}
+
+@keyframes rainbow {
+    75%  {background: #800080;}
+    60%  {background: #bf00ff;}
+    45%  {background: #0000ff;}
+    30%  {background: #008000;}
+    15%  {background: #ff8000;}
+    0%   {background: #ff0000;}
+    100%  {background: #660000;}
 }

@@ -19,10 +19,11 @@
             <div class="row">
                 <!-- When you add any option here also update regex in getTheme -->
                 <select id="theme" onclick="getTheme()">
-                    <option value="simple">Simple</option>
                     <option value="dark">Dark</option>
+                    <option value="simple">Simple</option>
                     <option value="static">Static</option>
                     <option value="police">Police</option>
+                    <option value="music">Music</option>
                 </select>
                 <br />
                 <input id="color" type="color" oninput="setStaticColor()" style="display: none;" />
@@ -45,22 +46,43 @@
             <!-- <div class="police-light"></div>
             <div class="police-light"></div> -->
         </div>
+        <div id="music" style="display: none;">
+            <div id="dark-overlay"></div>
+        </div>
     </div>
 
     <script>
+        let microphoneAccess = false;
         const getTheme = () => {
             let theme = document.querySelector("#theme");
             let container = document.querySelector(".container");
             let staticColor = document.querySelector("#color");
-            container.className = container.className.replace(/theme-(simple|dark|full|static|police)/gm, `theme-${theme.value}`);
+            let police = document.querySelector("#police");
+            let music = document.querySelector("#music");
+
+            container.className = container.className.replace(/theme-(simple|dark|full|static|police|music)/gm, `theme-${theme.value}`);
+
             if (theme.value === 'static') {
                 staticColor.style.display = 'block';
+                music.style.display = 'none';
                 container.style.backgroundColor = staticColor.value
             } else if (theme.value === 'police') {
-                let police = document.querySelector("#police");
+                container.style.removeProperty('background-color');
+                staticColor.style.display = 'none';
+                music.style.display = 'none';
                 police.style.display = 'flex';
+            } else if (theme.value === 'music') {
+                // container.style.removeProperty('background-color');
+                staticColor.style.display = 'none';
+                music.style.display = 'block';
+                police.style.display = 'none';
+                if(!microphoneAccess){
+                    setupMicrophone();
+                }
             } else {
                 staticColor.style.display = 'none';
+                police.style.display = 'none';
+                music.style.display = 'none';
                 container.style.removeProperty('background-color')
             }
         }
@@ -78,12 +100,50 @@
         window.onload = () => {
             let policelights = document.getElementsByClassName("police-light");
             for (let i = 0; i < policelights.length; i++) {
-                for(let j =0; j<150; j++){
+                for (let j = 0; j < 150; j++) {
                     let bulb = document.createElement('div');
                     bulb.className = "police-light-bulb";
                     policelights[i].appendChild(bulb);
                 }
             };
+        }
+        const setupMicrophone = () => {
+            navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: false
+            }).then(function (stream) {
+                microphoneAccess = true;
+                const audioContext = new AudioContext();
+                const analyser = audioContext.createAnalyser();
+                const microphone = audioContext.createMediaStreamSource(stream);
+                const scriptProcessor = audioContext.createScriptProcessor(2048, 1, 1);
+
+                analyser.smoothingTimeConstant = 0.8;
+                analyser.fftSize = 1024;
+
+                microphone.connect(analyser);
+                analyser.connect(scriptProcessor);
+                scriptProcessor.connect(audioContext.destination);
+                scriptProcessor.onaudioprocess = function () {
+                    const array = new Uint8Array(analyser.frequencyBinCount);
+                    analyser.getByteFrequencyData(array);
+                    const arraySum = array.reduce((a, value) => a + value, 0);
+                    const average = arraySum / array.length;
+                    colorIntensity(average);
+                };
+            }).catch(function (err) {
+                /* handle the error */
+                microphoneAccess = false;
+                console.error(err);
+            });
+        }
+        function colorIntensity(average){
+            let intensity = Math.round(90-average)/100;
+            intensity = intensity + 0.2> 1.0 ? 1 : intensity+0.2;
+            intensity = intensity < 0 ? 0 : intensity;
+            let body = document.querySelector("#dark-overlay");
+            // body.setAttribute('style',`background-color:rgba(255,0,0,${intensity})`);
+            body.setAttribute('style',`opacity:${intensity}`);
         }
     </script>
 </body>
